@@ -1,0 +1,74 @@
+name: ExperimentalAutoUpdater-revanced-patches
+
+on:
+  schedule:
+    - cron: "1 0 */2 * *"
+  workflow_dispatch:
+
+jobs:
+  ExperimentalAutoUpdater-revanced-patches-code:
+    runs-on: ubuntu-latest
+
+
+#    permissions:
+      
+
+    steps:
+      - name: Checkout the code/initialize repo for use
+        uses: actions/checkout@v2
+
+      - name: Installing Dependencies
+        run: sudo apt-get install -y git #&& sudo apt-get install -y p7zip-full
+        
+#      - name: ls -la
+#        run: ls -la
+        
+#      - name: fresh start - remove all old files
+#        run: find . -maxdepth 1 -type f ! -name ".github" -exec rm -rf {} \;
+
+#      - name: ls -la
+#        run: ls -la
+
+      - name: clone1
+        run: git clone -b main --single-branch "https://github.com/revanced/revanced-patches.git" revanced-patches
+      
+#      - name: list filestructure
+#        run: ls -la
+      
+      - name: clone2
+        run: git clone -b main --single-branch "https://github.com/inotia00/revanced-patches.git" revanced-patches2
+      
+#      - name: list filestructure
+#        run: ls -la
+      
+      - name: merge
+        run: rsync -i -a ./revanced-patches2/ ./revanced-patches/
+        
+#      - name: list filestructure
+#        run: ls -la
+        
+      - name: delete tempClone2
+        run: rm -rf revanced-patches2
+        
+      - name: delete foreign dotfiles
+        run: rm -rf ./revanced-patches/.git && rm -rf ./revanced-patches/.github && rm -rf ./revanced-patches/.idea
+        
+#      - name: compress
+#        run: 7z a ./rp.7z ./revanced-patches/
+        
+      - name: move to root
+        run: rsync -i -a ./revanced-patches/ ./ && rm -rf revanced-patches
+        
+#      - name: list filestructure
+#        run: ls -la
+        
+#      - name: pull
+#        run: git pull
+      
+      - name: Commit merges
+        run: |
+          git add -f ./
+          git config --global user.name 'Mafiadoener36'
+          git config --global user.email 'Mafiadoener36@users.noreply.github.com'
+          git commit -am "Automated debugMerge"
+          git push
