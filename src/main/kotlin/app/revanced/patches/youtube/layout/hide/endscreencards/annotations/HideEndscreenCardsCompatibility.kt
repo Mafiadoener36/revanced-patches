@@ -1,4 +1,4 @@
-package app.revanced.patches.youtube.layout.searchbar.annotations
+package app.revanced.patches.youtube.layout.hide.endscreencards.annotations
 
 import app.revanced.patcher.annotation.Compatibility
 import app.revanced.patcher.annotation.Package
@@ -20,4 +20,4 @@ import app.revanced.patcher.annotation.Package
     )]
 )
 @Target(AnnotationTarget.CLASS)
-internal annotation class WideSearchbarCompatibility
+internal annotation class HideEndscreenCardsCompatibility
