@@ -2,7 +2,9 @@
     <string name="revanced_ryd_video_likes_hidden_by_video_owner">Hidden</string>
 
     <string name="revanced_ryd_failure_connection_timeout">Dislikes temporarily not available (API timed out)</string>
+    <string name="revanced_ryd_failure_connection_status_code" formatted="false">Dislikes not available (status %d)</string>
     <string name="revanced_ryd_failure_client_rate_limit_requested">Dislikes not available (client API limit reached)</string>
+    <string name="revanced_ryd_failure_generic">Dislikes not available (%s)</string>
 
     <!-- corner case situation, where user enables RYD while video is playing and then tries to vote for the video -->
     <string name="revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted">Reload video to vote using ReturnYouTubeDislike</string>
@@ -19,6 +21,7 @@
     <string name="revanced_ryd_compact_layout_summary_on">Like button styled for minimum width</string>
     <string name="revanced_ryd_compact_layout_summary_off">Like button styled for best appearance</string>
 
+    <string name="revanced_ryd_about">About</string>
     <string name="revanced_ryd_attribution_title">ReturnYouTubeDislike.com</string>
     <string name="revanced_ryd_attribution_summary">Dislike data is provided by the Return YouTube Dislike API.  Tap here to learn more.</string>
 
