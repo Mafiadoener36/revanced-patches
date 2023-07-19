@@ -13,7 +13,7 @@ import org.jf.dexlib2.iface.instruction.Instruction
 import java.util.*
 
 @Patch(false)
-@Name("Spoof wifi connection")
+@Name("spoof-wifi-connection")
 @Description("Spoofs an existing Wi-Fi connection.")
 @Version("0.0.1")
 @RequiresIntegrations

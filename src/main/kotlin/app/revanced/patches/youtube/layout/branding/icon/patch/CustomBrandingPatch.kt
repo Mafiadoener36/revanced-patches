@@ -13,7 +13,7 @@ import java.io.File
 import java.nio.file.Files
 
 @Patch
-@Name("Custom branding")
+@Name("custom-branding")
 @Description("Changes the YouTube launcher icon and name to your choice (defaults to ReVanced).")
 @CustomBrandingCompatibility
 @Version("0.0.1")
