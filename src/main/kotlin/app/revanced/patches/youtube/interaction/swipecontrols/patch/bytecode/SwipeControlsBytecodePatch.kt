@@ -22,7 +22,7 @@ import org.jf.dexlib2.AccessFlags
 import org.jf.dexlib2.immutable.ImmutableMethod
 
 @Patch
-@Name("Swipe controls")
+@Name("swipe-controls")
 @Description("Adds volume and brightness swipe controls.")
 @SwipeControlsCompatibility
 @Version("0.0.3")

@@ -15,7 +15,7 @@ import java.nio.file.StandardCopyOption
 import kotlin.io.path.exists
 
 @Patch
-@Name("Premium heading")
+@Name("premium-heading")
 @Description("Shows premium branding on the home screen.")
 @PremiumHeadingCompatibility
 @Version("0.0.1")
