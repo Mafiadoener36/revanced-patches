@@ -2,13 +2,11 @@ package app.revanced.patches.youtube.layout.searchbar.fingerprints
 
 import app.revanced.patcher.extensions.or
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
-import com.android.tools.smali.dexlib2.AccessFlags
-import com.android.tools.smali.dexlib2.Opcode
+import org.jf.dexlib2.AccessFlags
+import org.jf.dexlib2.Opcode
 
 object SetWordmarkHeaderFingerprint : MethodFingerprint(
-    accessFlags = AccessFlags.PUBLIC or AccessFlags.FINAL,
-    returnType = "V",
-    parameters = listOf("Landroid/widget/ImageView;"),
+    "V", AccessFlags.PUBLIC or AccessFlags.FINAL, listOf("L"),
     opcodes = listOf(
         Opcode.IGET_OBJECT,
         Opcode.INVOKE_STATIC,
@@ -19,5 +17,6 @@ object SetWordmarkHeaderFingerprint : MethodFingerprint(
         Opcode.IGET_OBJECT,
         Opcode.CONST,
         Opcode.INVOKE_STATIC,
-    )
+    ),
+    customFingerprint = { methodDef -> methodDef.parameterTypes.first() == "Landroid/widget/ImageView;" }
 )
