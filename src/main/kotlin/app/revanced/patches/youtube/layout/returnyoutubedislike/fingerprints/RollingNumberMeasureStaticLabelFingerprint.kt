@@ -5,19 +5,17 @@ import app.revanced.patcher.fingerprint.MethodFingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
-object RollingNumberTextViewFingerprint : MethodFingerprint(
-    returnType = "V",
+/**
+ * Resolves to class found in [RollingNumberMeasureTextParentFingerprint].
+ */
+object RollingNumberMeasureStaticLabelFingerprint : MethodFingerprint(
+    returnType = "F",
     accessFlags = AccessFlags.PUBLIC or AccessFlags.FINAL,
-    parameters = listOf("L", "F", "F"),
+    parameters = listOf("Ljava/lang/String;"),
     opcodes = listOf(
-        Opcode.IPUT,
-        null,   // invoke-direct or invoke-virtual
-        Opcode.IPUT_OBJECT,
         Opcode.IGET_OBJECT,
         Opcode.INVOKE_VIRTUAL,
-        Opcode.RETURN_VOID
-    ),
-    customFingerprint = { _, classDef ->
-        classDef.superclass == "Landroid/support/v7/widget/AppCompatTextView;"
-    }
+        Opcode.MOVE_RESULT,
+        Opcode.RETURN
+    )
 )

@@ -11,13 +11,13 @@ import app.revanced.patcher.extensions.InstructionExtensions.getInstruction
 import app.revanced.patcher.extensions.InstructionExtensions.replaceInstruction
 import app.revanced.patcher.fingerprint.MethodFingerprint
 import app.revanced.patcher.patch.BytecodePatch
-import app.revanced.patcher.patch.PatchException
 import app.revanced.patcher.patch.annotation.CompatiblePackage
 import app.revanced.patcher.patch.annotation.Patch
 import app.revanced.patches.youtube.layout.returnyoutubedislike.fingerprints.*
 import app.revanced.patches.youtube.misc.integrations.IntegrationsPatch
 import app.revanced.patches.youtube.misc.litho.filter.LithoFilterPatch
 import app.revanced.patches.youtube.misc.playertype.PlayerTypeHookPatch
+import app.revanced.patches.youtube.shared.fingerprints.RollingNumberTextViewAnimationUpdateFingerprint
 import app.revanced.patches.youtube.video.videoid.VideoIdPatch
 import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
@@ -55,7 +55,9 @@ object ReturnYouTubeDislikePatch : BytecodePatch(
         DislikeFingerprint,
         RemoveLikeFingerprint,
         RollingNumberSetterFingerprint,
-        RollingNumberTextViewFingerprint
+        RollingNumberMeasureTextParentFingerprint,
+        RollingNumberTextViewFingerprint,
+        RollingNumberTextViewAnimationUpdateFingerprint
     )
 ) {
     private const val INTEGRATIONS_CLASS_DESCRIPTOR =
@@ -181,6 +183,51 @@ object ReturnYouTubeDislikePatch : BytecodePatch(
             }
         } ?: throw RollingNumberSetterFingerprint.exception
 
+        // Rolling Number text views use the measured width of the raw string for layout.
+        // Modify the measure text calculation to include the left drawable separator if needed.
+        RollingNumberMeasureAnimatedTextFingerprint.also {
+            if (!it.resolve(context, RollingNumberMeasureTextParentFingerprint.result!!.classDef))
+                throw it.exception
+        }.result?.also {
+            it.mutableMethod.apply {
+                val returnInstructionIndex = it.scanResult.patternScanResult!!.endIndex
+                val measuredTextWidthRegister =
+                    getInstruction<OneRegisterInstruction>(returnInstructionIndex).registerA
+
+                replaceInstruction( // Replace instruction to preserve control flow label.
+                    returnInstructionIndex,
+                    "invoke-static {p1, v$measuredTextWidthRegister}, $INTEGRATIONS_CLASS_DESCRIPTOR->onRollingNumberMeasured(Ljava/lang/String;F)F"
+                )
+                addInstructions(
+                    returnInstructionIndex + 1,
+                    """
+                        move-result v$measuredTextWidthRegister
+                        return v$measuredTextWidthRegister
+                    """
+                )
+            }
+        } ?: throw RollingNumberMeasureAnimatedTextFingerprint.exception
+
+        // Additional text measurement method. Used if YouTube decides not to animate the likes count
+        // and sometimes used for initial video load.
+        RollingNumberMeasureStaticLabelFingerprint.also {
+            if (!it.resolve(context, RollingNumberMeasureTextParentFingerprint.result!!.classDef))
+                throw it.exception
+        }.result?.also {
+            it.mutableMethod.apply {
+                val measureTextIndex = it.scanResult.patternScanResult!!.startIndex + 1
+                val freeRegister = getInstruction<TwoRegisterInstruction>(0).registerA
+
+                addInstructions(
+                    measureTextIndex + 1,
+                    """
+                        move-result v$freeRegister
+                        invoke-static {p1, v$freeRegister}, $INTEGRATIONS_CLASS_DESCRIPTOR->onRollingNumberMeasured(Ljava/lang/String;F)F
+                    """
+                )
+            }
+        } ?: throw RollingNumberMeasureStaticLabelFingerprint.exception
+
         // The rolling number Span is missing styling since it's initially set as a String.
         // Modify the UI text view and use the styled like/dislike Span.
         RollingNumberTextViewFingerprint.result?.let {
@@ -189,9 +236,9 @@ object ReturnYouTubeDislikePatch : BytecodePatch(
 
             // Videos less than 24 hours after uploaded, like counts will be updated in real time.
             // Whenever like counts are updated, TextView is set in this method.
-            val realTimeUpdateTextViewMethod = it.mutableClass.methods.find { method ->
-                method.parameterTypes.first() == "Landroid/graphics/Bitmap;"
-            } ?: throw PatchException("Failed to find realTimeUpdateTextViewMethod")
+            val realTimeUpdateTextViewMethod =
+                RollingNumberTextViewAnimationUpdateFingerprint.result?.mutableMethod
+                    ?: throw RollingNumberTextViewAnimationUpdateFingerprint.exception
 
             arrayOf(
                 initiallyCreatedTextViewMethod,
