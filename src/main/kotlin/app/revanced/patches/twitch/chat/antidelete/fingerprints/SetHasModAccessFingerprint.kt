@@ -1,10 +1,10 @@
 package app.revanced.patches.twitch.chat.antidelete.fingerprints
 
 
-import app.revanced.patcher.fingerprint.MethodFingerprint
+import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
 
-internal object SetHasModAccessFingerprint : MethodFingerprint(
-    customFingerprint = { methodDef, _ ->
+object SetHasModAccessFingerprint : MethodFingerprint(
+    customFingerprint = { methodDef ->
         methodDef.definingClass.endsWith("DeletedMessageClickableSpan;") && methodDef.name == "setHasModAccess"
     }
 )
