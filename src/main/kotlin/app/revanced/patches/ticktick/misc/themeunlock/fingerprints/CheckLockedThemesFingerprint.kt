@@ -1,9 +1,9 @@
 package app.revanced.patches.ticktick.misc.themeunlock.fingerprints
 
-import app.revanced.patcher.fingerprint.MethodFingerprint
+import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
 
-internal object CheckLockedThemesFingerprint : MethodFingerprint(
-    customFingerprint = { methodDef, _ ->
+object CheckLockedThemesFingerprint : MethodFingerprint(
+    customFingerprint = { methodDef ->
         methodDef.definingClass.endsWith("Theme;") && methodDef.name == "isLockedTheme"
     }
 )
