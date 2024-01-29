@@ -6,13 +6,14 @@ import app.revanced.patcher.patch.annotation.CompatiblePackage
 import app.revanced.patcher.patch.annotation.Patch
 import app.revanced.patcher.patch.options.PatchOption.PatchExtensions.stringPatchOption
 import app.revanced.util.ResourceGroup
+import app.revanced.util.Utils.trimIndentMultiline
 import app.revanced.util.copyResources
 import java.io.File
 import java.nio.file.Files
 
 @Patch(
     name = "Custom branding",
-    description = "Changes the app name and icon to your choice (defaults to \"YouTube ReVanced\" and the ReVanced logo).",
+    description = "Applies a custom app name and icon. Defaults to \"YouTube ReVanced\" and the ReVanced logo.",
     compatiblePackages = [
         CompatiblePackage("com.google.android.youtube")
     ],
@@ -64,10 +65,7 @@ object CustomBrandingPatch : ResourcePatch() {
             Each of these folders has to have the following files:
 
             ${iconResourceFileNames.joinToString("\n") { "- $it" }}
-        """
-            .split("\n")
-            .joinToString("\n") { it.trimIndent() } // Remove the leading whitespace from each line.
-            .trimIndent(), // Remove the leading newline.
+        """.trimIndentMultiline()
     )
 
     override fun execute(context: ResourceContext) {
@@ -93,7 +91,7 @@ object CustomBrandingPatch : ResourcePatch() {
                             )
                         }
                     }
-                } else resourceGroups.forEach { context.copyResources("branding", it) }
+                } else resourceGroups.forEach { context.copyResources("custom-branding", it) }
             }
         }
 
