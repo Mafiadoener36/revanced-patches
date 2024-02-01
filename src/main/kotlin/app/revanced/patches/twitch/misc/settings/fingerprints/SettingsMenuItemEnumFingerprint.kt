@@ -1,9 +1,9 @@
 package app.revanced.patches.twitch.misc.settings.fingerprints
 
-import app.revanced.patcher.fingerprint.MethodFingerprint
+import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
 
-internal object SettingsMenuItemEnumFingerprint : MethodFingerprint(
-    customFingerprint = { methodDef, _ ->
+object SettingsMenuItemEnumFingerprint : MethodFingerprint(
+    customFingerprint = { methodDef ->
         methodDef.definingClass.endsWith("/SettingsMenuItem;") && methodDef.name == "<clinit>"
     }
 )
