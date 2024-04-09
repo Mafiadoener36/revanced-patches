@@ -1,9 +1,9 @@
 package app.revanced.patches.twitch.ad.embedded.fingerprints
 
-import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
+import app.revanced.patcher.fingerprint.MethodFingerprint
 
-object CreateUsherClientFingerprint : MethodFingerprint(
-    customFingerprint = { method ->
+internal object CreateUsherClientFingerprint : MethodFingerprint(
+    customFingerprint = { method, _ ->
         method.definingClass.endsWith("Ltv/twitch/android/network/OkHttpClientFactory;") && method.name == "buildOkHttpClient"
     }
 )
