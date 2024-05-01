@@ -1,9 +1,9 @@
 package app.revanced.patches.twitch.misc.settings.fingerprints
 
-import app.revanced.patcher.fingerprint.MethodFingerprint
+import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
 
-internal object SettingsActivityOnCreateFingerprint : MethodFingerprint(
-    customFingerprint = { methodDef, _ ->
+object SettingsActivityOnCreateFingerprint : MethodFingerprint(
+    customFingerprint = { methodDef ->
         methodDef.definingClass.endsWith("/SettingsActivity;") &&
                 methodDef.name == "onCreate"
     }
